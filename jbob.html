@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JBOB's Data Collection Game</title>
+	<style>
+		/* hide shop and tab content by default */
+		.tabcontent {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<h1>JBOB's Data Collection Game</h1>
+	<div class="tab">
+		<button class="tablinks" onclick="openTab(event, 'Game')">Game</button>
+		<button class="tablinks" onclick="openTab(event, 'Shop')">Shop</button>
+	</div>
+	
+	<!-- Game tab content -->
+	<div id="Game" class="tabcontent">
+		<p>Click the button to collect bits:</p>
+		<button id="bitButton">Collect Bit</button>
+		<p id="bitCounter">Bits: 0</p>
+	</div>
+	
+	<!-- Shop tab content -->
+	<div id="Shop" class="tabcontent">
+		<h2>Shop</h2>
+		<p>Buy items to improve your data collection abilities:</p>
+		<button id="bitDoubler">Bit Doubler (cost: 10 bits)</button>
+	</div>
+	
+	<script>
+		// initialize bit counter and bit doubler status from cookies
+		let bits = parseInt(getCookie("bits")) || 0;
+		let bitDoublerActive = getCookie("bitDoublerActive") === "true";
+		
+		// update bit counter text
+		document.getElementById("bitCounter").innerHTML = "Bits: " + bits;
+		
+		// disable bit doubler button if already active
+		if (bitDoublerActive) {
+			document.getElementById("bitDoubler").disabled = true;
+		}
+		
+		// add click event to button
+		document.getElementById("bitButton").addEventListener("click", function(){
+			// check if bit doubler is active
+			let multiplier = 1;
+			if (bitDoublerActive) {
+				multiplier = 2;
+			}
+			
+			// increment bit counter
+			bits += multiplier;
+			
+			// update bit counter text
+			document.getElementById("bitCounter").innerHTML = "Bits: " + bits;
+			
+			// store new bit count in cookie
+			setCookie("bits", bits);
+		});
+		
+		// add click event to bit doubler item
+		document.getElementById("bitDoubler").addEventListener("click", function(){
+			// check if player has enough bits to purchase item
+			if (bits >= 10) {
+				// subtract cost from bit counter
+				bits -= 10;
+				
+				// activate bit doubler
+				bitDoublerActive = true;
+				
+				// disable bit doubler button
+				document.getElementById("bitDoubler").disabled = true;
+				
+				// store bit doubler status in cookie
+				setCookie("bitDoublerActive", true);
+			}
+		});
+		
+		// function to switch between tabs
+		function openTab(evt, tabName) {
+			// declare variables
+			let i, tabcontent, tablinks;
+			
+			// hide all tab content
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+			
+			// remove "active" class from all tablinks
+			tablinks = document.getElementsByClassName("tablinks
